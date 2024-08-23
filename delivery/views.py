@@ -9,10 +9,12 @@ from drf_spectacular.utils import extend_schema
 from .models import User,DeliveryLocation
 from .serializers import ( UserSerializer,
     LoginSerializer,
+    UserUpdateSerializer,
 )
 from .pagination import get_paginated_queryset
 from .utils import get_tokens_for_user
 from .permissions import DeleteUserPermission
+
 
 # Create your views here.
 
@@ -96,7 +98,45 @@ class UserCreateView(APIView):
 
 
 
+class UserUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def dispatch(self,request,*args,**kwargs):
+        self.model = User
+        self.user = self.model.objects.get(id=kwargs['id'])
+        self.serializer_class = UserUpdateSerializer
+        return super().dispatch(request,*args,**kwargs)
+
+
+
+    @extend_schema(
+        request=UserUpdateSerializer,
+        responses={200:UserUpdateSerializer}
+    )
+    def patch(self,request,id):
+        serializer = self.serializer_class(instance=self.user,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            context = {
+                'status':200,
+                'message':'User updated successsfully!!!',
+                'data' : serializer.data
+            }
+            return Response(context,status=200)
+        else:
+            context = {
+                'status':400,
+                'message':'Error while updating user',
+                'error':serializer.errors
+            }
+            return Response(context,status=400)
+
+
+
 class UserDeleteView(APIView):
+
+    permission_classes = [DeleteUserPermission,]
+
     def delete(self,request,id):
         try:
             user = User.objects.get(id=id)

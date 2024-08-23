@@ -34,6 +34,14 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email','username','dob','ph_number','full_name']
+
+
+
+
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField()
