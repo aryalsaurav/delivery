@@ -62,3 +62,11 @@ class LoginSerializer(serializers.Serializer):
             })
         validated_data['user'] = user
         return validated_data
+
+
+
+
+class DeliveryLocationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        pass
