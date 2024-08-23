@@ -6,8 +6,11 @@ from . import views
 app_name = "delivery"
 
 urlpatterns = [
+    path('login/',views.LoginView.as_view(),name="login"),
+
+
     path('user/list/',views.UserListView.as_view(),name="user-list"),
     path('user/create/',views.UserCreateView.as_view(),name="user-create"),
-    path('login/',views.LoginView.as_view(),name="login"),
+    path('user/<int:id>/delete/',views.UserDeleteView.as_view(),name='user-delete'),
 
 ]

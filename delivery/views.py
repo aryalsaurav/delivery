@@ -12,6 +12,7 @@ from .serializers import ( UserSerializer,
 )
 from .pagination import get_paginated_queryset
 from .utils import get_tokens_for_user
+from .permissions import DeleteUserPermission
 
 # Create your views here.
 
@@ -92,3 +93,23 @@ class UserCreateView(APIView):
                 'error':serializer.errors
             }
             return Response(context,status=400)
+
+
+
+class UserDeleteView(APIView):
+    def delete(self,request,id):
+        try:
+            user = User.objects.get(id=id)
+            user.delete()
+            context = {
+                'status':200,
+                'message': 'User Deleted Successfully!!!'
+            }
+            return Response(context,status=200)
+        except:
+            context={
+                'status':404,
+                'message':'User not found'
+
+            }
+            return Response(context,status=404)
