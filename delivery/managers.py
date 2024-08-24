@@ -1,5 +1,6 @@
 from django.contrib.auth.models import BaseUserManager
 from datetime import datetime
+from django.db import models
 
 
 class UserBaseManager(BaseUserManager):
@@ -18,3 +19,20 @@ class UserBaseManager(BaseUserManager):
         extra_fields.setdefault('is_active',True)
         extra_fields.setdefault('dob',datetime.now())
         return self.create_user(email,password,**extra_fields)
+
+
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted_at=None)
+
+    def get_deleted(self):
+        return super().get_queryset().filter(deleted_at__isnull=False)
+
+
+
+class SoftDeletionManager(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted_at=None)
+
+    def get_deleted(self):
+        return super().get_queryset().filter(deleted_at__isnull=False)

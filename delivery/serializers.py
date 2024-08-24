@@ -12,10 +12,11 @@ class UserSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True,required=True)
     class Meta:
         model = User
-        fields = ['email','username','password','password2','full_name','dob','ph_number']
+        fields = ['id','email','username','password','password2','full_name','dob','ph_number']
         extra_kwargs = {
             'password': {'write_only':True},
-            'username':{'required':False}
+            'username':{'required':False},
+            'id':{'read_only':True}
         }
 
 
@@ -37,7 +38,10 @@ class UserSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email','username','dob','ph_number','full_name']
+        fields = ['id','email','username','dob','ph_number','full_name']
+        extra_kwargs = {
+            'id':{'read_only':True}
+        }
 
 
 
@@ -69,4 +73,9 @@ class LoginSerializer(serializers.Serializer):
 class DeliveryLocationSerializer(serializers.ModelSerializer):
 
     class Meta:
-        pass
+        model = DeliveryLocation
+        fields = ['id','user','address','longitude','latitude','primary']
+        extra_kwargs = {
+            'user':{'read_only':True},
+            'id':{'read_only':True}
+        }

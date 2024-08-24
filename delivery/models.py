@@ -3,11 +3,27 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
-from .managers import UserBaseManager
+from .managers import UserBaseManager,SoftDeletionManager
 # Create your models here.
 
+class AuditFields(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True,blank=True)
 
-class User(AbstractUser):
+    class Meta:
+        abstract=True
+
+    def delete(self,hard=False,*args,**kwargs):
+        if not hard:
+            self.deleted_at=timezone.now()
+            super().save(*args,**kwargs)
+        else:
+            super().delete(*args,**kwargs)
+
+
+
+class User(AbstractUser,AuditFields):
     email = models.EmailField(max_length=100,unique=True,db_index=True)
     username = models.CharField(max_length=100,unique=True)
     full_name = models.CharField(max_length=100)
@@ -40,8 +56,19 @@ class User(AbstractUser):
 
 
 
-class DeliveryLocation(models.Model):
+class DeliveryLocation(AuditFields):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     latitude = models.CharField(max_length=20)
     longitude = models.CharField(max_length=20)
     address = models.CharField(max_length=255,null=True,blank=True)
+    primary = models.BooleanField(default=False)
+
+    objects = SoftDeletionManager()
+
+    def save(self,*args,**kwargs):
+        if self.primary:
+            prev_primary = DeliveryLocation.objects.filter(user=self.user,primary=True).exclude(id=self.id)
+            for pre in prev_primary:
+                pre.primary = False
+                pre.save()
+        super().save(*args,**kwargs)
