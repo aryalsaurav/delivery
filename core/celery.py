@@ -9,13 +9,15 @@ app = Celery('core')
 
 app.config_from_object('django.conf:settings',namespace='CELERY')
 
-
+app.conf.update(
+    timezone="UTC",
+)
 
 app.conf.beat_schedule = {
     'birthday-wish':{
         'task':'delivery.tasks.brithday_wish',
-        'schedule': crontab(minute='*')
+        'schedule': crontab(hour=0,minute=0)
     }
-    }
+}
 
 app.autodiscover_tasks()
