@@ -14,7 +14,7 @@ from .serializers import ( UserSerializer,
     DeliveryLocationSerializer,
 )
 from .pagination import get_paginated_queryset
-from .utils import get_tokens_for_user
+from .utils import get_tokens_for_user,get_age_group,plot_age_groups
 from .permissions import DeleteUserPermission
 
 
@@ -258,3 +258,32 @@ class LocationDeleteView(APIView):
                 'message':'Delivery Location not found'
             }
             return Response(context,status=404)
+
+
+
+## user age group
+
+class AgeGroupDistributionView(APIView):
+    permission_classes = [IsAuthenticated,]
+    def get(self,request):
+        age_distribution = get_age_group()
+
+        context = {
+            'status':200,
+            'message':'Data reterived successfully!!!',
+            'data': age_distribution
+        }
+        return Response(context,status=200)
+
+
+
+class MatplotlibView(APIView):
+    permission_classes = [AllowAny,]
+    def get(self,request):
+        img_base64 = plot_age_groups()
+        context = {
+            'status':200,
+            'message':'Data reterived successfully!!!',
+            'data': img_base64
+        }
+        return Response(context,status=200)

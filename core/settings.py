@@ -44,12 +44,14 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'drf_spectacular',
     'rest_framework_simplejwt',
+    'corsheaders',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -131,6 +133,10 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'delivery.exception_handler.custom_exception_handler',
 
 }
+
+
+
+CORS_ALLOW_ALL_ORIGINS = True ## just to use the visualize.html file
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

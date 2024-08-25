@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Age Group Chart</title>
+    </head>
+    <body>
+        <h1>Age Group Chart</h1>
+        <img id="age-group-chart" src="" alt="Age Group Chart" />
+
+        <script>
+            async function fetchChart() {
+                try {
+                    const response = await fetch(
+                        "http://localhost:8000/api/bar/chart/",
+                    );
+                    const data = await response.json();
+                    const imgElement =
+                        document.getElementById("age-group-chart");
+                    imgElement.src = "data:image/png;base64," + data.data;
+                } catch (error) {
+                    console.error("Error fetching chart:", error);
+                }
+            }
+
+            fetchChart();
+        </script>
+    </body>
+</html>

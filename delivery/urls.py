@@ -21,4 +21,9 @@ urlpatterns = [
     path('delivery/location/<int:id>/delete/',views.LocationDeleteView.as_view(),name="delivery-location-delete"),
 
 
+    ##age group
+    path('age/distribution/',views.AgeGroupDistributionView.as_view(),name='age-distribution'),
+    path('bar/chart/', views.MatplotlibView.as_view(),name="bar-chart"),
+
+
 ]

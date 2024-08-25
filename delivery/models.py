@@ -44,7 +44,8 @@ class User(AbstractUser,AuditFields):
 
     @property
     def age(self):
-        return (timezone.now().date() - self.dob ).year
+        diff = (timezone.now().date() - self.dob )
+        return int(diff.days//365.25)
 
     def save(self,*args,**kwargs):
         if not self.username:
